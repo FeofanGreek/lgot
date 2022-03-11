@@ -3163,7 +3163,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      /*floatingActionButton: new FloatingActionButton(
+      floatingActionButton: new FloatingActionButton(
 
         onPressed:(){
           _controller.animateTo((MediaQuery.of(context).size.height) * scrollCount, duration: Duration(seconds: 2), curve: Curves.ease);
@@ -3172,9 +3172,9 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: new Icon(Icons.keyboard_arrow_down_rounded, size: 50,color:Color(0xFF6A6A6A),), //cчитаем вниз, потом меняем на направление вверх и считаем вверх
         backgroundColor: Color(0xFFFFFFFF),
-      ),*/
-      floatingActionButton:
-            Container(width: 300, /*height: 300,*/ alignment: Alignment.bottomRight, color: Colors.transparent, child:jureHelpButton(),)
+      ),
+      /*floatingActionButton:
+            Container(width: 300, /*height: 300,*/ alignment: Alignment.bottomRight, color: Colors.transparent, child:jureHelpButton(),)*/
 
     );
   }
