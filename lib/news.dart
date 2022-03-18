@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter/services.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'LaunchScreen.dart';
 import 'jureHelp.dart';
@@ -23,9 +24,25 @@ class NewsPage extends StatefulWidget {
 
 class _NewsPageState extends State<NewsPage> {
 
-  PublisherBannerAd _bannerAd;
-  final Completer<PublisherBannerAd> bannerCompleter =
-  Completer<PublisherBannerAd>();
+  //PublisherBannerAd _bannerAd;
+  //final Completer<PublisherBannerAd> bannerCompleter = Completer<PublisherBannerAd>();
+
+  static const platform = MethodChannel('ru.koldashev.lgototvet/ads');
+  Future<void> showInterstitial() async {
+    if (screenADS) platform.invokeMethod('showInterstitial');
+    setState(() {});
+  }
+
+  Future<void> showBanner() async {
+    platform.invokeMethod('showBanner');
+    floatHeight = 200;
+    setState(() {});
+  }
+  Future<void> hideBanner() async {
+    platform.invokeMethod('hideBanner');
+    floatHeight = 200;
+    setState(() {});
+  }
 
   getNewsList()async{
     try{
@@ -50,7 +67,7 @@ class _NewsPageState extends State<NewsPage> {
   @override
   void initState() {
     //if(bannerADS) {
-      _bannerAd = PublisherBannerAd(
+      /*_bannerAd = PublisherBannerAd(
          adUnitId: BannerAd.testAdUnitId,
         //adUnitId: 'ca-app-pub-6547023176140506/1689787700',
         request: PublisherAdRequest(nonPersonalizedAds: true),
@@ -71,23 +88,24 @@ class _NewsPageState extends State<NewsPage> {
           onApplicationExit: (Ad ad) =>
               print('$PublisherBannerAd onApplicationExit.'),
         ),
-      );
+      );*/
 
-
-      Future<void>.delayed(Duration(seconds: 1), () {
+      /*Future<void>.delayed(Duration(seconds: 1), () {
         _bannerAd.load();
-      });
+      });*/
     //}
 
 
     super.initState();
+    showBanner();
+    showInterstitial();
     getNewsList();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _bannerAd.dispose();
+    //_bannerAd.dispose();
   }
 
   goToSite(url) async {
@@ -144,7 +162,7 @@ class _NewsPageState extends State<NewsPage> {
         child: Container(
               child: Column(
                   children: <Widget>[
-    /*bannerADS ? */FutureBuilder<PublisherBannerAd>(
+    /*bannerADS ? FutureBuilder<PublisherBannerAd>(
                       future: bannerCompleter.future,
                       builder:
                           (BuildContext context, AsyncSnapshot<PublisherBannerAd> snapshot) {
@@ -173,7 +191,7 @@ class _NewsPageState extends State<NewsPage> {
                           child: child,
                         );
                       },
-                    ) /*: Container()*/,
+                    ) : Container()*/
               listNewsReady == true ? ListView.builder(
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
@@ -288,7 +306,7 @@ class _NewsPageState extends State<NewsPage> {
     );
   }
   //int _selectedIndex = 1;
-  void _onItemTapped(int index) {
+  /*void _onItemTapped(int index) {
     setState(() {
       selectedIndex = index;
     });
@@ -299,9 +317,9 @@ class _NewsPageState extends State<NewsPage> {
           showScreenBanner++;
         });
         if (!interstitialReady) return;
-        interstitialAd.show();
+        //interstitialAd.show();
         interstitialReady = false;
-        interstitialAd = null;
+        //interstitialAd = null;
       }else if(showScreenBanner == 1){setState(() {
         showScreenBanner++;
       });}else{setState(() {
@@ -319,16 +337,69 @@ class _NewsPageState extends State<NewsPage> {
           showScreenBanner++;
         });
         if (!interstitialReady) return;
-        interstitialAd.show();
+        //interstitialAd.show();
         interstitialReady = false;
-        interstitialAd = null;
+        //interstitialAd = null;
       }else if(showScreenBanner == 1){setState(() {
         showScreenBanner++;
       });}else{setState(() {
         showScreenBanner=0;
       });}
     }
+  }*/
+  void _onItemTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+    if (selectedIndex == 0) {
+      Navigator.of(context).pushNamed('/main');
+      if (showScreenBanner == 0) {
+        setState(() {
+          showScreenBanner++;
+        });
+        //showInterstitial();
+        // if (!interstitialReady) return;
+        // interstitialAd.show();
+        // interstitialReady = false;
+        // interstitialAd = null;
+      } else if (showScreenBanner == 1) {
+        setState(() {
+          showScreenBanner++;
+        });
+      } else {
+        setState(() {
+          showScreenBanner = 0;
+        });
+      }
+    }
+    if (selectedIndex == 1) {
+      Navigator.of(context).pushNamed('/news');
+    }
+    if (selectedIndex == 2) {
+      //hideBanner();
+      Navigator.pushReplacement(context,
+          CupertinoPageRoute(builder: (context) => PlayWithComputer()));
+      if (showScreenBanner == 0) {
+        setState(() {
+          showScreenBanner++;
+        });
+        //showInterstitial();
+        // if (!interstitialReady) return;
+        // interstitialAd.show();
+        // interstitialReady = false;
+        // interstitialAd = null;
+      } else if (showScreenBanner == 1) {
+        setState(() {
+          showScreenBanner++;
+        });
+      } else {
+        setState(() {
+          showScreenBanner = 0;
+        });
+      }
+    }
   }
+
 }
 
 /*

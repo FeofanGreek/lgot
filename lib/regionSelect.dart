@@ -22,6 +22,24 @@ class RegionSelectPage extends StatefulWidget {
 }
 
 class _RegionSelectPageState extends State<RegionSelectPage> {
+  static const platform = MethodChannel('ru.koldashev.lgototvet/ads');
+  Future<void> showInterstitial() async {
+    platform.invokeMethod('showInterstitial');
+    setState(() {});
+  }
+
+  Future<void> showBanner() async {
+    platform.invokeMethod('showBanner');
+    floatHeight = 200;
+    setState(() {});
+  }
+
+  Future<void> hideBanner() async {
+    platform.invokeMethod('hideBanner');
+    floatHeight = 200;
+    setState(() {});
+  }
+
   var _controllerSearchRegion = TextEditingController();
   getRegionsList()async{
     try{
@@ -148,7 +166,7 @@ class _RegionSelectPageState extends State<RegionSelectPage> {
                      // print(parsedJsonRegionList);
                     },
                     // ignore: deprecated_member_use
-                    autovalidate: true,
+                    autovalidateMode: AutovalidateMode.always,
                     controller: _controllerSearchRegion,
                   ),
                 ),

@@ -2,10 +2,11 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+//import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'dart:io';
 
 import 'main.dart';
@@ -29,6 +30,24 @@ class PlayWithComputer extends StatefulWidget {
 }
 
 class _HomePageState extends State<PlayWithComputer> {
+  static const platform = MethodChannel('ru.koldashev.lgototvet/ads');
+  Future<void> showInterstitial() async {
+    platform.invokeMethod('showInterstitial');
+    setState(() {});
+  }
+
+  Future<void> showBanner() async {
+    platform.invokeMethod('showBanner');
+    floatHeight = 200;
+    setState(() {});
+  }
+
+  Future<void> hideBanner() async {
+    platform.invokeMethod('hideBanner');
+    floatHeight = 200;
+    setState(() {});
+  }
+
   Map _source = {ConnectivityResult.none: false};
   MyConnectivity _connectivity = MyConnectivity.instance;
 
@@ -48,10 +67,11 @@ class _HomePageState extends State<PlayWithComputer> {
     timer = new Timer.periodic(Duration(seconds: 10), (timer) {
 
     });
+    //hideBanner();
     super.initState();
   }
 
-  void _onItemTapped(int index) {
+  /*void _onItemTapped(int index) {
     setState(() {
       selectedIndex = index;
     });
@@ -61,10 +81,10 @@ class _HomePageState extends State<PlayWithComputer> {
         setState(() {
           showScreenBanner++;
         });
-        if (!interstitialReady) return;
-        interstitialAd.show();
-        interstitialReady = false;
-        interstitialAd = null;
+        //if (!interstitialReady) return;
+        //interstitialAd.show();
+        //interstitialReady = false;
+        //interstitialAd = null;
       }else if(showScreenBanner == 1){setState(() {
         showScreenBanner++;
       });}else{setState(() {
@@ -78,9 +98,9 @@ class _HomePageState extends State<PlayWithComputer> {
           showScreenBanner++;
         });
         if (!interstitialReady) return;
-        interstitialAd.show();
+        //interstitialAd.show();
         interstitialReady = false;
-        interstitialAd = null;
+        //interstitialAd = null;
       }else if(showScreenBanner == 1){setState(() {
         showScreenBanner++;
       });}else{setState(() {
@@ -88,6 +108,59 @@ class _HomePageState extends State<PlayWithComputer> {
       });}
     }
     if(selectedIndex == 2){
+      Navigator.pushReplacement(context,
+          CupertinoPageRoute(builder: (context) => PlayWithComputer()));
+    }
+  }*/
+
+  void _onItemTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+    if (selectedIndex == 0) {
+      Navigator.of(context).pushNamed('/main');
+      if (showScreenBanner == 0) {
+        setState(() {
+          showScreenBanner++;
+        });
+        //showInterstitial();
+        // if (!interstitialReady) return;
+        // interstitialAd.show();
+        // interstitialReady = false;
+        // interstitialAd = null;
+      } else if (showScreenBanner == 1) {
+        setState(() {
+          showScreenBanner++;
+        });
+      } else {
+        setState(() {
+          showScreenBanner = 0;
+        });
+      }
+    }
+    if (selectedIndex == 1) {
+      Navigator.of(context).pushNamed('/news');
+      if (showScreenBanner == 0) {
+        setState(() {
+          showScreenBanner++;
+        });
+        //showInterstitial();
+        // if (!interstitialReady) return;
+        // interstitialAd.show();
+        // interstitialReady = false;
+        // interstitialAd = null;
+      } else if (showScreenBanner == 1) {
+        setState(() {
+          showScreenBanner++;
+        });
+      } else {
+        setState(() {
+          showScreenBanner = 0;
+        });
+      }
+    }
+    if (selectedIndex == 2) {
+      //hideBanner();
       Navigator.pushReplacement(context,
           CupertinoPageRoute(builder: (context) => PlayWithComputer()));
     }
@@ -206,6 +279,7 @@ class _HomePageState extends State<PlayWithComputer> {
       case ConnectivityResult.wifi:
         string = "Подключено к WiFi";
         return Scaffold(
+          backgroundColor: Color(0xFFFFFFFF),
             appBar: AppBar(
             title: Container(width: 200, height: 99, child: Stack( children: <Widget> [Positioned(left:0, top: 22, child: Image.asset('images/logo.png',  height: 44, width:99, ),),]),),
               centerTitle: false,
@@ -309,7 +383,7 @@ class MyConnectivity {
 class MyWebView extends StatelessWidget {
 
   String selectedUrl;
-  final flutterWebviewPlugin = new FlutterWebviewPlugin();
+  //final flutterWebviewPlugin = new FlutterWebviewPlugin();
   final Completer<WebViewController> _controller =
   Completer<WebViewController>();
 
@@ -321,7 +395,9 @@ class MyWebView extends StatelessWidget {
   //создаем тело виджета
   @override
   Widget build(BuildContext context) {
-    return WebView(
+    return Container(
+        margin: EdgeInsets.fromLTRB(0,0,0,80),
+        child:WebView(
             initialUrl: selectedUrl,
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (WebViewController webViewController) {
@@ -330,7 +406,8 @@ class MyWebView extends StatelessWidget {
             },
             onPageFinished: (url){
             }
-        );
+        )
+    );
   }
 
 }

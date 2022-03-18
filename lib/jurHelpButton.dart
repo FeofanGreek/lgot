@@ -2,10 +2,11 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+//import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'dart:io';
 
 import 'main.dart';
@@ -29,6 +30,23 @@ class jureHelpButton extends StatefulWidget {
 }
 
 class _HomePageState extends State<jureHelpButton> {
+  static const platform = MethodChannel('ru.koldashev.lgototvet/ads');
+  Future<void> showInterstitial() async {
+    platform.invokeMethod('showInterstitial');
+    setState(() {});
+  }
+
+  Future<void> showBanner() async {
+    platform.invokeMethod('showBanner');
+    setState(() {});
+  }
+
+  Future<void> hideBanner() async {
+    platform.invokeMethod('hideBanner');
+    setState(() {});
+  }
+
+
   Map _source = {ConnectivityResult.none: false};
   MyConnectivity _connectivity = MyConnectivity.instance;
 
@@ -55,41 +73,51 @@ class _HomePageState extends State<jureHelpButton> {
     setState(() {
       selectedIndex = index;
     });
-    if(selectedIndex == 0) {
+    if (selectedIndex == 0) {
       Navigator.of(context).pushNamed('/main');
-      if(showScreenBanner == 0) {
+      if (showScreenBanner == 0) {
         setState(() {
           showScreenBanner++;
         });
-        if (!interstitialReady) return;
-        interstitialAd.show();
-        interstitialReady = false;
-        interstitialAd = null;
-      }else if(showScreenBanner == 1){setState(() {
-        showScreenBanner++;
-      });}else{setState(() {
-        showScreenBanner=0;
-      });}
+        showInterstitial();
+        // if (!interstitialReady) return;
+        // interstitialAd.show();
+        // interstitialReady = false;
+        // interstitialAd = null;
+      } else if (showScreenBanner == 1) {
+        setState(() {
+          showScreenBanner++;
+        });
+      } else {
+        setState(() {
+          showScreenBanner = 0;
+        });
+      }
     }
-    if(selectedIndex == 1){
+    if (selectedIndex == 1) {
       Navigator.of(context).pushNamed('/news');
-      if(showScreenBanner == 0) {
+      if (showScreenBanner == 0) {
         setState(() {
           showScreenBanner++;
         });
-        if (!interstitialReady) return;
-        interstitialAd.show();
-        interstitialReady = false;
-        interstitialAd = null;
-      }else if(showScreenBanner == 1){setState(() {
-        showScreenBanner++;
-      });}else{setState(() {
-        showScreenBanner=0;
-      });}
+        showInterstitial();
+        // if (!interstitialReady) return;
+        // interstitialAd.show();
+        // interstitialReady = false;
+        // interstitialAd = null;
+      } else if (showScreenBanner == 1) {
+        setState(() {
+          showScreenBanner++;
+        });
+      } else {
+        setState(() {
+          showScreenBanner = 0;
+        });
+      }
     }
-    if(selectedIndex == 2){
-      Navigator.pushReplacement(context,
-          CupertinoPageRoute(builder: (context) => jureHelpButton()));
+    if (selectedIndex == 2) {
+      Navigator.pushReplacement(
+          context, CupertinoPageRoute(builder: (context) => jureHelpButton()));
     }
   }
 
@@ -178,7 +206,7 @@ class MyConnectivity {
 class MyWebView extends StatelessWidget {
 
   String selectedUrl;
-  final flutterWebviewPlugin = new FlutterWebviewPlugin();
+  //final flutterWebviewPlugin = new FlutterWebviewPlugin();
   final Completer<WebViewController> _controller =
   Completer<WebViewController>();
 

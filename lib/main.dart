@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lgototvet/regionSelect.dart';
 import 'LaunchScreen.dart';
@@ -15,7 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 const String testDevice = 'LgotAPP';
 var parsedJsonPaysList;
@@ -24,6 +25,7 @@ int countDayInMonth = 28;//количество дней в месяце по у
 int dayToDay;
 var sizeForLittleCircle;
 int bannerLoadCount = 0;
+double floatHeight = 200;
 
 
 //int monthNum = 1; // значение будем менять фильтром
@@ -61,9 +63,9 @@ int backMessage =0;
 
 List monthCalendar = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
 
-InterstitialAd interstitialAd;
+//InterstitialAd interstitialAd;
 bool interstitialReady = false;
-PublisherBannerAd bannerAd;
+//PublisherBannerAd bannerAd;
 int showScreenBanner = 0;
 
 RemoteMessage initialMessage;
@@ -77,7 +79,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
+  //MobileAds.instance.initialize();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   runApp(MyApp());
 }
@@ -111,9 +113,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const platform = MethodChannel('ru.koldashev.lgototvet/ads');
+  Future<void> showInterstitial() async {
+    platform.invokeMethod('showInterstitial');
+    setState(() {});
+  }
+
+  Future<void> showBanner() async {
+    platform.invokeMethod('showBanner');
+    floatHeight = 200;
+    setState(() {});
+  }
+
+  Future<void> hideBanner() async {
+    platform.invokeMethod('hideBanner');
+    floatHeight = 200;
+    setState(() {});
+  }
+
   double floaterSize = 85.0;
-  final Completer<PublisherBannerAd> bannerCompleter =
-  Completer<PublisherBannerAd>();
+ /* final Completer<PublisherBannerAd> bannerCompleter =  Completer<PublisherBannerAd>();
 
 
   static final AdRequest request = AdRequest(
@@ -121,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
     keywords: <String>['раз', 'два'],
     contentUrl: 'https://yandex.ru',
     nonPersonalizedAds: true,
-  );
+  );*/
 
 
 
@@ -152,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  void createInterstitialAd() {
+  /*void createInterstitialAd() {
     interstitialAd ??= InterstitialAd(
       //adUnitId: InterstitialAd.testAdUnitId,
       adUnitId: 'ca-app-pub-6547023176140506/8314987958',
@@ -181,13 +200,13 @@ class _MyHomePageState extends State<MyHomePage> {
     //Future<void>.delayed(Duration(seconds: 1), () => bannerAd.load());
     //Future<void>.delayed(Duration(seconds: 1), () => print('загрузка баннера'));
 
-  }
+  }*/
 
 
   @override
   void initState(){
     //if(bannerADS) {
-      bannerAd = PublisherBannerAd(
+      /*bannerAd = PublisherBannerAd(
         adUnitId: BannerAd.testAdUnitId,
         //adUnitId: 'ca-app-pub-6547023176140506/1689787700',
         request: PublisherAdRequest(nonPersonalizedAds: true),
@@ -211,10 +230,10 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       Future<void>.delayed(Duration(seconds: 15), () {
         bannerAd.load();
-      });
+      });*/
    // }
 
-    if(screenADS){
+    /*if(screenADS){
       MobileAds.instance.initialize().then((InitializationStatus status) {
         print('Рекламный блок инициализирован: ${status.adapterStatuses}');
         MobileAds.instance
@@ -225,8 +244,15 @@ class _MyHomePageState extends State<MyHomePage> {
           createInterstitialAd();
         });
       });
+    }*/
+
+    if (bannerADS) {
+      showBanner();
     }
 
+    if (screenADS) {
+      showInterstitial();
+    }
     super.initState();
       /*const twentyMillis = const Duration(seconds:10);
       new Timer(twentyMillis, () {setState(() {
@@ -246,9 +272,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    interstitialAd?.dispose();
+    //interstitialAd?.dispose();
     super.dispose();
-    bannerAd.dispose();
+    //bannerAd.dispose();
   }
 
 
@@ -289,8 +315,8 @@ class _MyHomePageState extends State<MyHomePage> {
           child:Center(
             child: Column(
               children: <Widget>[
-                Text('Баннер запрашивался $bannerLoadCount раз'),
-                bannerADS ? FutureBuilder<PublisherBannerAd>(
+                //Text('Баннер запрашивался $bannerLoadCount раз'),
+                /*bannerADS ? FutureBuilder<PublisherBannerAd>(
                   future: bannerCompleter.future,
                   builder:
                       (BuildContext context, AsyncSnapshot<PublisherBannerAd> snapshot) {
@@ -318,7 +344,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child:child,
                     );
                   },
-                ):Container(),
+                ):Container(),*/
 
 
 
@@ -3163,7 +3189,9 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: new FloatingActionButton(
+      floatingActionButton: Container(
+        height: floatHeight,
+    child:FloatingActionButton(
 
         onPressed:(){
           _controller.animateTo((MediaQuery.of(context).size.height) * scrollCount, duration: Duration(seconds: 2), curve: Curves.ease);
@@ -3172,6 +3200,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: new Icon(Icons.keyboard_arrow_down_rounded, size: 50,color:Color(0xFF6A6A6A),), //cчитаем вниз, потом меняем на направление вверх и считаем вверх
         backgroundColor: Color(0xFFFFFFFF),
+      ),
       ),
       /*floatingActionButton:
             Container(width: 300, /*height: 300,*/ alignment: Alignment.bottomRight, color: Colors.transparent, child:jureHelpButton(),)*/
@@ -3194,9 +3223,9 @@ class _MyHomePageState extends State<MyHomePage> {
         showScreenBanner++;
       });
       if (!interstitialReady) return;
-      interstitialAd.show();
-      interstitialReady = false;
-      interstitialAd = null;
+      //interstitialAd.show();
+      //interstitialReady = false;
+      //interstitialAd = null;
       }else if(showScreenBanner == 1){setState(() {
       showScreenBanner++;
     });}else{setState(() {
@@ -3204,6 +3233,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });}
     }
     if(selectedIndex == 2){
+      //hideBanner();
       Navigator.pushReplacement(context,
           CupertinoPageRoute(builder: (context) => PlayWithComputer()));
       if(showScreenBanner == 0) {
@@ -3211,9 +3241,9 @@ class _MyHomePageState extends State<MyHomePage> {
           showScreenBanner++;
         });
         if (!interstitialReady) return;
-        interstitialAd.show();
+        //interstitialAd.show();
         interstitialReady = false;
-        interstitialAd = null;
+        //interstitialAd = null;
       }else if(showScreenBanner == 1){setState(() {
         showScreenBanner++;
       });}else{setState(() {
